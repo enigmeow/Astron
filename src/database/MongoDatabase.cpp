@@ -341,7 +341,7 @@ class MongoDatabase : public DatabaseBackend
     {
         // Shutdown threads:
         {
-            lock_guard<mutex> guard(m_lock);
+          lock_guard<std::mutex> guard(m_lock);
             m_shutdown = true;
             m_cv.notify_all();
         }
@@ -355,7 +355,7 @@ class MongoDatabase : public DatabaseBackend
 
     virtual void submit(DBOperation *operation)
     {
-        lock_guard<mutex> guard(m_lock);
+        lock_guard<std::mutex> guard(m_lock);
         m_operation_queue.push(operation);
         m_cv.notify_one();
     }
@@ -368,7 +368,7 @@ class MongoDatabase : public DatabaseBackend
     queue<DBOperation *> m_operation_queue;
     condition_variable m_cv;
 
-    mutex m_lock;
+    std::mutex m_lock;
     vector<thread *> m_threads;
     bool m_shutdown;
 
@@ -403,7 +403,7 @@ class MongoDatabase : public DatabaseBackend
 
     void run_thread()
     {
-        unique_lock<mutex> guard(m_lock);
+        unique_lock<std::mutex> guard(m_lock);
 
         DBClientBase *client = new_connection();
 

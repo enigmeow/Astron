@@ -17,12 +17,17 @@ if(MONGO_INCLUDE_DIR AND MONGO_LIBRARIES)
 
 else(MONGO_INCLUDE_DIR AND MONGO_LIBRARIES)
 
+	find_path(MONGO_CONFIG_DIR mongo/config.h
+          ${PROJECT_SOURCE_DIR}/dependencies/mongo-cxx-driver/build/linux2/normal
+          )
+          
 	find_path(MONGO_INCLUDE_DIR mongo/client/dbclient.h
 	  /usr/include
 	  /usr/local/include
 	  /opt/local/include
-	  ${PROJECT_SOURCE_DIR}/dependencies/mongo-cxx-driver/include
-    )
+ 	  ${PROJECT_SOURCE_DIR}/dependencies/mongo-cxx-driver/include
+	  ${PROJECT_SOURCE_DIR}/dependencies/mongo-cxx-driver/src
+          )
 
   find_library(MONGO_LIBRARIES NAMES mongoclient  libmongoclient
     PATHS
@@ -30,6 +35,7 @@ else(MONGO_INCLUDE_DIR AND MONGO_LIBRARIES)
     /usr/local/lib
     /opt/local/lib
     ${PROJECT_SOURCE_DIR}/dependencies/mongo-cxx-driver/lib
+    ${PROJECT_SOURCE_DIR}/dependencies/mongo-cxx-driver/build/linux2/normal
     )
 
   GET_FILENAME_COMPONENT(MONGO_LIBRARY_DIR ${MONGO_LIBRARIES} PATH)
@@ -39,6 +45,10 @@ else(MONGO_INCLUDE_DIR AND MONGO_LIBRARIES)
     set(MONGO_FOUND TRUE)
     message(STATUS "Found MongoDB: ${MONGO_INCLUDE_DIR}, ${MONGO_LIBRARIES}")
     INCLUDE_DIRECTORIES(${MONGO_INCLUDE_DIR})
+    if(MONGO_CONFIG_DIR)
+      INCLUDE_DIRECTORIES(${MONGO_CONFIG_DIR})
+      message(STATUS "mongo/config.h found")
+    endif (MONGO_CONFIG_DIR)
   else(MONGO_INCLUDE_DIR AND MONGO_LIBRARIES)
     set(MONGO_FOUND FALSE)
     message(STATUS "MongoDB not found.")

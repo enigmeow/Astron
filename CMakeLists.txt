@@ -55,7 +55,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR
 		"${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -O2 -g -Wall")
 
 	# warnings are errors, release code should not have warnings
-	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2 -Wall -Werror")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2 -Wall -Werror -Wno-deprecated-declarations")
 
 	# debug flags, wall, wextra
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -Wall -Wextra")
